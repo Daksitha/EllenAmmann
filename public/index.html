@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ellen Ammann - Knowledge Base Editor</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;800&display=swap"
+        rel="stylesheet">
+    <!-- Main Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app-background">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header glass-panel">
+            <div class="header-logo">
+                <h1>Ellen Ammann Dataset Manager</h1>
+            </div>
+            <nav class="header-nav">
+                <button id="nav-kb-btn" class="nav-btn active">Knowledge Base</button>
+                <button id="nav-qa-btn" class="nav-btn">Questionnaire</button>
+            </nav>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+
+            <!-- KNOWLEDGE BASE VIEW -->
+            <section id="kb-view" class="view-section active">
+                <div class="view-header">
+                    <h2>Knowledge Base Records</h2>
+                    <p>Manage factual records, events, quotes, and summaries.</p>
+                </div>
+
+                <div class="content-grid">
+                    <!-- List Panel -->
+                    <div class="list-panel glass-panel">
+                        <div class="panel-header">
+                            <h3>Existing Records</h3>
+                            <button id="kb-refresh-btn" class="btn-icon" title="Refresh">↻</button>
+                        </div>
+                        <div class="list-controls">
+                            <input type="text" id="kb-search-input" placeholder="Search records...">
+                            <select id="kb-filter-select">
+                                <option value="all">All Categories</option>
+                                <option value="personal_life">Personal Life</option>
+                                <option value="work_life">Work Life</option>
+                                <option value="political_life">Political Life</option>
+                                <option value="achievements">Achievements</option>
+                                <option value="memory_event">Memory Event</option>
+                                <option value="legacy">Legacy</option>
+                            </select>
+                        </div>
+                        <div class="record-list" id="kb-record-list">
+                            <!-- Records populated via JS -->
+                            <div class="loading-spinner">Loading records...</div>
+                        </div>
+                    </div>
+
+                    <!-- Editor Panel -->
+                    <div class="editor-panel glass-panel">
+                        <div class="panel-header">
+                            <h3>Add / Edit Record</h3>
+                            <button id="kb-new-btn" class="btn-primary btn-small">+ New Record</button>
+                        </div>
+                        <form id="kb-form" class="editor-form">
+                            <!-- Basic Info -->
+                            <div class="form-group">
+                                <label for="kb-record-id">Record ID (e.g. ea_fact_0001) *</label>
+                                <input type="text" id="kb-record-id" name="record_id" required>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="kb-record-type">Record Type *</label>
+                                    <input list="type-options" id="kb-record-type" name="record_type"
+                                        placeholder="e.g. fact" required>
+                                    <datalist id="type-options">
+                                        <option value="fact">
+                                        <option value="event">
+                                        <option value="person_profile">
+                                        <option value="quote">
+                                        <option value="summary">
+                                    </datalist>
+                                </div>
+                                <div class="form-group">
+                                    <label for="kb-category">Category *</label>
+                                    <input list="cat-options" id="kb-category" name="category"
+                                        placeholder="e.g. personal_life" required>
+                                    <datalist id="cat-options">
+                                        <option value="personal_life">
+                                        <option value="work_life">
+                                        <option value="political_life">
+                                        <option value="achievements">
+                                        <option value="memory_event">
+                                        <option value="legacy">
+                                    </datalist>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="kb-subject">Subject *</label>
+                                <input type="text" id="kb-subject" name="subject" value="Ellen Ammann" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="kb-text">Text (The factual statement for retrieval) *</label>
+                                <textarea id="kb-text" name="text" rows="3" required></textarea>
+                            </div>
+
+                            <!-- Optional Triples -->
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="kb-predicate">Predicate (Optional)</label>
+                                    <input type="text" id="kb-predicate" name="predicate" placeholder="e.g. born">
+                                </div>
+                                <div class="form-group">
+                                    <label for="kb-object">Object (Optional)</label>
+                                    <input type="text" id="kb-object" name="object"
+                                        placeholder="e.g. 1870-07-01 in Stockholm">
+                                </div>
+                            </div>
+
+                            <!-- Time and Location -->
+                            <details class="advanced-section">
+                                <summary>Time & Location (Optional)</summary>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="kb-time-date">Time Date (YYYY-MM-DD)</label>
+                                        <input type="text" id="kb-time-date" placeholder="e.g. 1870-07-01">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="kb-time-precision">Time Precision</label>
+                                        <select id="kb-time-precision">
+                                            <option value="">None</option>
+                                            <option value="day">Day</option>
+                                            <option value="month">Month</option>
+                                            <option value="year">Year</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="kb-loc-name">Location Name</label>
+                                        <input type="text" id="kb-loc-name" placeholder="e.g. Munich">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="kb-loc-country">Location Country</label>
+                                        <input type="text" id="kb-loc-country" placeholder="e.g. Germany">
+                                    </div>
+                                </div>
+                            </details>
+
+                            <!-- Provenance & Auditing -->
+                            <div class="form-group">
+                                <label for="kb-source-ids">Source IDs (comma separated) *</label>
+                                <input type="text" id="kb-source-ids" name="source_ids"
+                                    placeholder="e.g. src_ndb_1953, src_dnb_gnd" required>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="kb-confidence">Confidence</label>
+                                    <select id="kb-confidence" name="confidence">
+                                        <option value="high">High</option>
+                                        <option value="medium_high">Medium High</option>
+                                        <option value="medium">Medium</option>
+                                        <option value="low">Low</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="kb-status">Status</label>
+                                    <select id="kb-status" name="status">
+                                        <option value="asserted">Asserted</option>
+                                        <option value="disputed">Disputed</option>
+                                        <option value="needs_review">Needs Review</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group" id="conflict-set-group" style="display: none;">
+                                <label for="kb-conflict-set">Conflict Set ID (if disputed)</label>
+                                <input type="text" id="kb-conflict-set" name="conflict_set_id"
+                                    placeholder="e.g. death_date_conflict">
+                            </div>
+
+                            <div class="form-actions" style="display: flex; gap: 1rem;">
+                                <button type="button" id="kb-delete-btn" class="btn-icon"
+                                    style="background: rgba(239, 68, 68, 0.1); color: var(--error-color); border-color: rgba(239, 68, 68, 0.2); width: auto; padding: 0 1rem; display: none;"
+                                    title="Delete Record">🗑 Delete</button>
+                                <button type="submit" id="kb-submit-btn" class="btn-primary">Save to KB File</button>
+                            </div>
+                            <div id="kb-form-msg" class="form-msg"></div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <!-- QUESTIONNAIRE VIEW -->
+            <section id="qa-view" class="view-section">
+                <div class="view-header">
+                    <h2>Evaluation Questionnaire</h2>
+                    <p>Manage ground-truth queries to evaluate the RAG logic.</p>
+                </div>
+
+                <div class="content-grid">
+                    <!-- List Panel -->
+                    <div class="list-panel glass-panel">
+                        <div class="panel-header">
+                            <h3>Existing Questions</h3>
+                            <button id="qa-refresh-btn" class="btn-icon" title="Refresh">↻</button>
+                        </div>
+                        <div class="list-controls">
+                            <input type="text" id="qa-search-input" placeholder="Search questions...">
+                        </div>
+                        <div class="record-list" id="qa-record-list">
+                            <!-- Records populated via JS -->
+                            <div class="loading-spinner">Loading questions...</div>
+                        </div>
+                    </div>
+
+                    <!-- Editor Panel -->
+                    <div class="editor-panel glass-panel">
+                        <div class="panel-header">
+                            <h3>Add / Edit Question</h3>
+                            <button id="qa-new-btn" class="btn-primary btn-small">+ New Question</button>
+                        </div>
+                        <form id="qa-form" class="editor-form">
+                            <!-- Basic Info -->
+                            <div class="form-group">
+                                <label for="qa-qid">Question ID (e.g. Q01) *</label>
+                                <input type="text" id="qa-qid" name="qid" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="qa-question">Question *</label>
+                                <textarea id="qa-question" name="question" rows="2" required></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="qa-gt-answer">Ground Truth Answer *</label>
+                                <textarea id="qa-gt-answer" name="ground_truth_answer" rows="3" required></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="qa-answer-type">Answer Type</label>
+                                <select id="qa-answer-type" name="answer_type">
+                                    <option value="short_text">Short Text</option>
+                                    <option value="date_place">Date & Place</option>
+                                    <option value="place_year">Place & Year</option>
+                                    <option value="identifier">Identifier</option>
+                                    <option value="person_year">Person & Year</option>
+                                    <option value="number">Number</option>
+                                    <option value="date_range">Date Range</option>
+                                    <option value="year">Year</option>
+                                    <option value="list">List</option>
+                                    <option value="explanation">Explanation</option>
+                                    <option value="complex">Complex</option>
+                                </select>
+                            </div>
+
+                            <!-- Linkages -->
+                            <div class="form-group">
+                                <label for="qa-supporting-records">Supporting Record IDs (comma separated) *</label>
+                                <input type="text" id="qa-supporting-records" name="supporting_record_ids"
+                                    placeholder="e.g. ea_fact_0002" required>
+                                <small class="field-hint">Links back to the Knowledge Base</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="qa-supporting-sources">Supporting Source IDs (comma separated) *</label>
+                                <input type="text" id="qa-supporting-sources" name="supporting_source_ids"
+                                    placeholder="e.g. src_ndb_1953" required>
+                            </div>
+
+                            <div class="form-actions" style="display: flex; gap: 1rem;">
+                                <button type="button" id="qa-delete-btn" class="btn-icon"
+                                    style="background: rgba(239, 68, 68, 0.1); color: var(--error-color); border-color: rgba(239, 68, 68, 0.2); width: auto; padding: 0 1rem; display: none;"
+                                    title="Delete Question">🗑 Delete</button>
+                                <button type="submit" id="qa-submit-btn" class="btn-primary">Save to QA File</button>
+                            </div>
+                            <div id="qa-form-msg" class="form-msg"></div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- App Logic -->
+    <script src="app.js"></script>
+</body>
+
+</html>
