@@ -14,6 +14,23 @@ Below is how the application should look when it is running. You can switch betw
 
 ![Questions Interface](images/Screenshot_Ques.png)
 
+## Installation & Setup
+
+### Windows Quick Start
+
+1. **Download/Clone:** Download this repository to your local machine.
+2. **Build:** Double-click on `build.bat`. This will install all necessary Node.js dependencies.
+3. **Start:** Once the build is complete, double-click on `start.bat` to launch the application.
+
+### Alternative Editing
+
+While the web tool is recommended for visualising and managing the database, you can also simply edit the raw data files directly:
+
+- `ellen_ammann_kb.jsonl` (Knowledge Base)
+- `ellen_ammann_eval_qa.jsonl` (Evaluation Questionnaire)
+
+If you have any questions or need assistance, please feel free to reach out!
+
 ## Getting Started
 
 **If you are looking to learn how to use this tool to build your dataset, please read the [User Manual](User_Manual.md) first!** The manual covers starting the application, making edits, deleting entries, and safely backing up your progress.
@@ -24,19 +41,19 @@ The codebase is a simple, no-build-required, full-stack application. It prioriti
 
 ### Tech Stack
 
-* **Backend:** Node.js with Express.js (`server.js`)
-* **Frontend:** Vanilla HTML (`public/index.html`), CSS (`public/style.css`), and JavaScript (`public/app.js`)
-* **Data Storage:** Local `.jsonl` files (JSON Lines format)
+- **Backend:** Node.js with Express.js (`server.js`)
+- **Frontend:** Vanilla HTML (`public/index.html`), CSS (`public/style.css`), and JavaScript (`public/app.js`)
+- **Data Storage:** Local `.jsonl` files (JSON Lines format)
 
 ### Directory Structure
 
-* [`server.js`](server.js): The main backend server file. It exposes REST API endpoints (`GET`, `POST`, `DELETE`) to interact with the JSONL files.
-* [`public/`](public): Contains the frontend assets.
-  * [`index.html`](public/index.html): The semantic structure of the editor.
-  * [`style.css`](public/style.css): A premium, dark-mode, glassmorphism design system.
-  * [`app.js`](public/app.js): The client-side logic that handles fetching data, rendering lists, populating forms, and submitting changes via the `fetch` API.
-* `data/`: A generated folder that holds ring-buffer backups of the datasets.
-* `.bat` scripts: Helper scripts for Windows users to easily build, start, stop, and reset the application.
+- [`server.js`](server.js): The main backend server file. It exposes REST API endpoints (`GET`, `POST`, `DELETE`) to interact with the JSONL files.
+- [`public/`](public): Contains the frontend assets.
+  - [`index.html`](public/index.html): The semantic structure of the editor.
+  - [`style.css`](public/style.css): A premium, dark-mode, glassmorphism design system.
+  - [`app.js`](public/app.js): The client-side logic that handles fetching data, rendering lists, populating forms, and submitting changes via the `fetch` API.
+- `data/`: A generated folder that holds ring-buffer backups of the datasets.
+- `.bat` scripts: Helper scripts for Windows users to easily build, start, stop, and reset the application.
 
 ## How it uses JSONL Data
 
