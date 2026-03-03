@@ -10,6 +10,4 @@ yarn-error.log*
 .env
 .env.local
 
-# Backup files
-data/kb/kb_backup_*.jsonl
-data/qa/qa_backup_*.jsonl
+
