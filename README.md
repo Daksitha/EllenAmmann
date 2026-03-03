@@ -21,6 +21,7 @@ Below is how the application should look when it is running. You can switch betw
 1. **Download/Clone:** Download this repository to your local machine.
 2. **Build:** Double-click on `build.bat`. This will install all necessary Node.js dependencies.
 3. **Start:** Once the build is complete, double-click on `start.bat` to launch the application.
+4. You will see the message: Server is running on http://localhost:3000. Then open web browser such as Google Chrome and past the link : `http://localhost:3000`
 
 ### Alternative Editing
 
