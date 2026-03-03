@@ -2,6 +2,18 @@
 
 This project is a lightweight, local web application designed to help non-technical users build a structured **Knowledge Base (KB)** and an **Evaluation Questionnaire (QA)** for Ellen Ammann. The resulting datasets are intended to be used for a Retrieval-Augmented Generation (RAG) system.
 
+## Application Preview
+
+Below is how the application should look when it is running. You can switch between the Knowledge Base and the Evaluation Questionnaire tabs.
+
+### Knowledge Base (KB) Interface
+
+![Knowledge Base Interface](images/Screenshot_KB.png)
+
+### Evaluation Questionnaire (QA) Interface
+
+![Questions Interface](images/Screenshot_Ques.png)
+
 ## Getting Started
 
 **If you are looking to learn how to use this tool to build your dataset, please read the [User Manual](User_Manual.md) first!** The manual covers starting the application, making edits, deleting entries, and safely backing up your progress.
