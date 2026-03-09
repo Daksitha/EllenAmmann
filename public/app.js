@@ -1,4 +1,127 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // === Session Management ===
+    let currentSession = localStorage.getItem('knowledge_architect_session') || 'default';
+    const sessionSelect = document.getElementById('session-select');
+    const newSessionBtn = document.getElementById('new-session-btn');
+    const uploadSessionBtn = document.getElementById('upload-session-btn');
+    const importInput = document.getElementById('import-session-input');
+
+    async function loadSessions() {
+        try {
+            const res = await fetch('/api/sessions');
+            const sessions = await res.json();
+
+            sessionSelect.innerHTML = sessions.map(s =>
+                `<option value="${s}" ${s === currentSession ? 'selected' : ''}>${s}</option>`
+            ).join('');
+
+            if (!sessions.includes(currentSession)) {
+                currentSession = sessions[0] || 'default';
+                localStorage.setItem('knowledge_architect_session', currentSession);
+            }
+        } catch (err) {
+            console.error('Failed to load sessions', err);
+        }
+    }
+
+    sessionSelect.addEventListener('change', (e) => {
+        currentSession = e.target.value;
+        localStorage.setItem('knowledge_architect_session', currentSession);
+
+        // Prevent data leakage: Clear any active form editing states
+        if (typeof resetForm === 'function') {
+            const kbFormEl = document.getElementById('kb-form');
+            const kbDelBtn = document.getElementById('kb-delete-btn');
+            const qaFormEl = document.getElementById('qa-form');
+            const qaDelBtn = document.getElementById('qa-delete-btn');
+            if (kbFormEl) resetForm(kbFormEl, kbDelBtn);
+            if (qaFormEl) resetForm(qaFormEl, qaDelBtn);
+
+            const kbMsg = document.getElementById('kb-form-msg');
+            const qaMsg = document.getElementById('qa-form-msg');
+            if (kbMsg) kbMsg.style.display = 'none';
+            if (qaMsg) qaMsg.style.display = 'none';
+        }
+
+        refreshCurrentView();
+    });
+
+    newSessionBtn.addEventListener('click', async () => {
+        const name = prompt('Enter a name for the new session (logs and data will be saved accordingly):');
+        if (!name) return;
+
+        try {
+            const res = await fetch('/api/sessions', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ sessionId: name })
+            });
+            const result = await res.json();
+            if (res.ok) {
+                currentSession = result.sessionId;
+                localStorage.setItem('knowledge_architect_session', currentSession);
+                await loadSessions();
+                refreshCurrentView();
+            } else {
+                alert(result.error);
+            }
+        } catch (err) {
+            alert('Failed to create session');
+        }
+    });
+
+    uploadSessionBtn.addEventListener('click', () => importInput.click());
+
+    importInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const sessionName = prompt('Enter a name for the imported session:', file.name.replace('.jsonl', ''));
+        if (!sessionName) return;
+
+        const reader = new FileReader();
+        reader.onload = async (event) => {
+            const content = event.target.result;
+            // We assume the file is a KB or QA file based on user choice or we can ask.
+            // For simplicity, let's just upload it as KB and ask user if it's QA.
+            const isQa = confirm('Is this a Questionnaire (QA) file? Click Cancel for Knowledge Base (KB).');
+
+            try {
+                const res = await fetch('/api/sessions/upload', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        sessionId: sessionName,
+                        kbData: isQa ? null : content,
+                        qaData: isQa ? content : null
+                    })
+                });
+                if (res.ok) {
+                    currentSession = sessionName;
+                    localStorage.setItem('knowledge_architect_session', currentSession);
+                    await loadSessions();
+                    refreshCurrentView();
+                }
+            } catch (err) {
+                alert('Upload failed');
+            }
+        };
+        reader.readAsText(file);
+    });
+
+    function refreshCurrentView() {
+        if (kbView.classList.contains('active')) loadKbRecords();
+        else loadQaRecords();
+    }
+
+    // Header Helper
+    function getHeaders() {
+        return {
+            'Content-Type': 'application/json',
+            'x-session-id': currentSession
+        };
+    }
+
     // === Navigation Logic ===
     const navKbBtn = document.getElementById('nav-kb-btn');
     const navQaBtn = document.getElementById('nav-qa-btn');
@@ -22,6 +145,24 @@ document.addEventListener('DOMContentLoaded', () => {
             kbView.classList.remove('active');
             loadQaRecords();
         }
+    }
+
+    // === Quick Guide Logic ===
+    const guideBtn = document.getElementById('guide-dropdown-btn');
+    const guidePanel = document.getElementById('quick-guide-panel');
+
+    if (guideBtn && guidePanel) {
+        guideBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            guidePanel.style.display = guidePanel.style.display === 'none' ? 'block' : 'none';
+        });
+
+        // Close when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!guidePanel.contains(e.target) && e.target !== guideBtn) {
+                guidePanel.style.display = 'none';
+            }
+        });
     }
 
     // === Global State ===
@@ -57,10 +198,15 @@ document.addEventListener('DOMContentLoaded', () => {
     kbFilter.addEventListener('change', renderKbRecords);
     kbNewBtn.addEventListener('click', () => resetForm(kbForm));
 
+    const kbDownloadBtn = document.getElementById('kb-download-btn');
+    if (kbDownloadBtn) {
+        kbDownloadBtn.addEventListener('click', () => { window.location.href = '/api/kb/download'; });
+    }
+
     async function loadKbRecords() {
         kbListMenu.innerHTML = '<div class="loading-spinner">Loading records...</div>';
         try {
-            const res = await fetch('/api/kb');
+            const res = await fetch('/api/kb', { headers: getHeaders() });
             kbRecords = await res.json();
             updateKbDatalists();
             renderKbRecords();
@@ -197,7 +343,7 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const res = await fetch('/api/kb', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: getHeaders(),
                 body: JSON.stringify(record)
             });
 
@@ -226,7 +372,10 @@ document.addEventListener('DOMContentLoaded', () => {
         msgEl.style.display = 'block';
 
         try {
-            const res = await fetch(`/api/kb/${id}`, { method: 'DELETE' });
+            const res = await fetch(`/api/kb/${id}`, {
+                method: 'DELETE',
+                headers: getHeaders()
+            });
             if (!res.ok) throw new Error(await res.text());
 
             msgEl.className = 'form-msg success';
@@ -254,10 +403,15 @@ document.addEventListener('DOMContentLoaded', () => {
     qaSearch.addEventListener('input', renderQaRecords);
     qaNewBtn.addEventListener('click', () => resetForm(qaForm));
 
+    const qaDownloadBtn = document.getElementById('qa-download-btn');
+    if (qaDownloadBtn) {
+        qaDownloadBtn.addEventListener('click', () => { window.location.href = '/api/qa/download'; });
+    }
+
     async function loadQaRecords() {
         qaListMenu.innerHTML = '<div class="loading-spinner">Loading questions...</div>';
         try {
-            const res = await fetch('/api/qa');
+            const res = await fetch('/api/qa', { headers: getHeaders() });
             qaRecords = await res.json();
             renderQaRecords();
         } catch (err) {
@@ -336,7 +490,7 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const res = await fetch('/api/qa', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: getHeaders(),
                 body: JSON.stringify(record)
             });
 
@@ -365,7 +519,10 @@ document.addEventListener('DOMContentLoaded', () => {
         msgEl.style.display = 'block';
 
         try {
-            const res = await fetch(`/api/qa/${id}`, { method: 'DELETE' });
+            const res = await fetch(`/api/qa/${id}`, {
+                method: 'DELETE',
+                headers: getHeaders()
+            });
             if (!res.ok) throw new Error(await res.text());
 
             msgEl.className = 'form-msg success';
@@ -394,5 +551,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Initial Load
-    loadKbRecords();
+    loadSessions().then(() => {
+        loadKbRecords();
+    });
 });

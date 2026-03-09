@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ellen Ammann - Knowledge Base Editor</title>
+    <title>Knowledge Architect - Dataset Manager</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -26,11 +26,34 @@
         <!-- Header -->
         <header class="app-header glass-panel">
             <div class="header-logo">
-                <h1>Ellen Ammann Dataset Manager</h1>
+                <h1>Knowledge Architect</h1>
             </div>
-            <nav class="header-nav">
+
+            <div class="session-controls">
+                <select id="session-select" class="session-dropdown">
+                    <!-- Sessions populated via JS -->
+                </select>
+                <button id="new-session-btn" class="btn-icon" title="New Session">➕</button>
+                <button id="upload-session-btn" class="btn-icon" title="Import Session">📂</button>
+                <input type="file" id="import-session-input" style="display: none;" accept=".jsonl">
+            </div>
+
+            <nav class="header-nav" style="position: relative;">
                 <button id="nav-kb-btn" class="nav-btn active">Knowledge Base</button>
                 <button id="nav-qa-btn" class="nav-btn">Questionnaire</button>
+                <button id="guide-dropdown-btn" class="nav-btn"
+                    style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);">📖
+                    Guide</button>
+
+                <div id="quick-guide-panel" class="guide-panel" style="display: none;">
+                    <h4>How to Use</h4>
+                    <p><strong>Sessions:</strong> Select projects from the dropdown. Use <strong>➕</strong> for a new
+                        session or <strong>📂</strong> to import a <code>.jsonl</code> file.</p>
+                    <p><strong>Knowledge Base:</strong> Manage your facts, events, and quotes here.</p>
+                    <p><strong>Questionnaire:</strong> Create evaluation questions linked to your KB.</p>
+                    <p><strong>Download:</strong> Click the <strong>↓</strong> button inside any panel to download its
+                        specific dataset.</p>
+                </div>
             </nav>
         </header>
 
@@ -49,7 +72,10 @@
                     <div class="list-panel glass-panel">
                         <div class="panel-header">
                             <h3>Existing Records</h3>
-                            <button id="kb-refresh-btn" class="btn-icon" title="Refresh">↻</button>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <button id="kb-download-btn" class="btn-icon" title="Download KB">↓</button>
+                                <button id="kb-refresh-btn" class="btn-icon" title="Refresh">↻</button>
+                            </div>
                         </div>
                         <div class="list-controls">
                             <input type="text" id="kb-search-input" placeholder="Search records...">
@@ -220,7 +246,10 @@
                     <div class="list-panel glass-panel">
                         <div class="panel-header">
                             <h3>Existing Questions</h3>
-                            <button id="qa-refresh-btn" class="btn-icon" title="Refresh">↻</button>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <button id="qa-download-btn" class="btn-icon" title="Download QA">↓</button>
+                                <button id="qa-refresh-btn" class="btn-icon" title="Refresh">↻</button>
+                            </div>
                         </div>
                         <div class="list-controls">
                             <input type="text" id="qa-search-input" placeholder="Search questions...">

@@ -1,0 +1,10 @@
+node_modules
+server.log
+server.pid
+sessions
+.git
+*.jsonl
+data
+backups
+*.bat
+*.sh

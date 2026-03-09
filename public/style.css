@@ -41,7 +41,10 @@ body {
 /* === ANIMATED BACKGROUND (Glassmorphism blobs) === */
 .app-background {
   position: fixed;
-  top: 0; left: 0; width: 100vw; height: 100vh;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
   z-index: -1;
   overflow: hidden;
   background: radial-gradient(circle at top right, #1a1c23, #0f1115);
@@ -56,30 +59,44 @@ body {
 }
 
 .blob-1 {
-  top: -10%; left: -10%;
-  width: 50vw; height: 50vw;
+  top: -10%;
+  left: -10%;
+  width: 50vw;
+  height: 50vw;
   background: rgba(99, 102, 241, 0.15);
   animation-delay: 0s;
 }
 
 .blob-2 {
-  bottom: -20%; right: -10%;
-  width: 60vw; height: 60vw;
+  bottom: -20%;
+  right: -10%;
+  width: 60vw;
+  height: 60vw;
   background: rgba(236, 72, 153, 0.1);
   animation-delay: -5s;
 }
 
 .blob-3 {
-  top: 40%; left: 60%;
-  width: 30vw; height: 30vw;
+  top: 40%;
+  left: 60%;
+  width: 30vw;
+  height: 30vw;
   background: rgba(16, 185, 129, 0.1);
   animation-delay: -10s;
 }
 
 @keyframes float {
-  0% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(5%, 5%) scale(1.05); }
-  100% { transform: translate(-5%, 10%) scale(0.95); }
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate(5%, 5%) scale(1.05);
+  }
+
+  100% {
+    transform: translate(-5%, 10%) scale(0.95);
+  }
 }
 
 /* === LAYOUT === */
@@ -114,7 +131,7 @@ body {
 .header-nav {
   display: flex;
   gap: 1rem;
-  background: rgba(0,0,0,0.2);
+  background: rgba(0, 0, 0, 0.2);
   padding: 0.5rem;
   border-radius: var(--radius-lg);
   border: 1px solid var(--panel-border);
@@ -135,7 +152,7 @@ body {
 
 .nav-btn:hover {
   color: var(--text-main);
-  background: rgba(255,255,255,0.05);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .nav-btn.active {
@@ -144,12 +161,76 @@ body {
   box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
 }
 
+/* === SESSION CONTROLS === */
+.session-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(0, 0, 0, 0.1);
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--panel-border);
+}
+
+.session-dropdown {
+  background: transparent;
+  border: none;
+  color: var(--text-main);
+  font-weight: 600;
+  width: auto;
+  padding: 0.25rem 2rem 0.25rem 0.5rem;
+  font-size: 0.9rem;
+}
+
+.session-dropdown:focus {
+  box-shadow: none;
+  border: none;
+}
+
+/* === QUICK GUIDE PANEL === */
+.guide-panel {
+  position: absolute;
+  top: 130%;
+  right: 0;
+  width: 320px;
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  z-index: 100;
+  text-align: left;
+}
+
+.guide-panel h4 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: var(--primary-light);
+  font-size: 1.1rem;
+  border-bottom: 1px solid var(--panel-border);
+  padding-bottom: 0.5rem;
+}
+
+.guide-panel p {
+  margin: 0.75rem 0;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.guide-panel strong {
+  color: var(--text-main);
+}
+
 /* === MAIN CONTENT AREAS === */
 .main-content {
   flex: 1;
   display: flex;
   flex-direction: column;
-  min-height: 0; /* needed for nested scrolling */
+  min-height: 0;
+  /* needed for nested scrolling */
 }
 
 .view-section {
@@ -164,8 +245,15 @@ body {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .view-header {
@@ -187,7 +275,8 @@ body {
   grid-template-columns: 1fr 1fr;
   gap: 2rem;
   flex: 1;
-  min-height: 0; /* Important for scrollable columns */
+  min-height: 0;
+  /* Important for scrollable columns */
 }
 
 @media (max-width: 1024px) {
@@ -211,8 +300,8 @@ body {
 }
 
 .glass-panel:hover {
-  border-color: rgba(255,255,255,0.15);
-  box-shadow: var(--shadow-md), 0 0 15px rgba(255,255,255,0.02);
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: var(--shadow-md), 0 0 15px rgba(255, 255, 255, 0.02);
 }
 
 .panel-header {
@@ -221,7 +310,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: rgba(255,255,255,0.02);
+  background: rgba(255, 255, 255, 0.02);
 }
 
 .panel-header h3 {
@@ -236,7 +325,7 @@ body {
   display: flex;
   gap: 1rem;
   border-bottom: 1px solid var(--panel-border);
-  background: rgba(0,0,0,0.1);
+  background: rgba(0, 0, 0, 0.1);
 }
 
 .record-list {
@@ -252,20 +341,23 @@ body {
 .record-list::-webkit-scrollbar {
   width: 8px;
 }
+
 .record-list::-webkit-scrollbar-track {
-  background: rgba(0,0,0,0.1);
+  background: rgba(0, 0, 0, 0.1);
 }
+
 .record-list::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,0.1);
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 4px;
 }
+
 .record-list::-webkit-scrollbar-thumb:hover {
-  background: rgba(255,255,255,0.2);
+  background: rgba(255, 255, 255, 0.2);
 }
 
 /* Record Items */
 .record-item {
-  background: rgba(255,255,255,0.03);
+  background: rgba(255, 255, 255, 0.03);
   border: 1px solid var(--panel-border);
   border-radius: var(--radius-md);
   padding: 1rem;
@@ -277,7 +369,7 @@ body {
 }
 
 .record-item:hover {
-  background: rgba(255,255,255,0.08);
+  background: rgba(255, 255, 255, 0.08);
   transform: translateY(-2px);
   border-color: var(--primary-color);
 }
@@ -296,7 +388,7 @@ body {
 }
 
 .record-badge {
-  background: rgba(255,255,255,0.1);
+  background: rgba(255, 255, 255, 0.1);
   padding: 0.15rem 0.5rem;
   border-radius: 4px;
   font-weight: 600;
@@ -326,14 +418,24 @@ body {
   gap: 1.25rem;
 }
 
-.editor-form::-webkit-scrollbar { width: 8px; }
-.editor-form::-webkit-scrollbar-track { background: transparent; }
-.editor-form::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+.editor-form::-webkit-scrollbar {
+  width: 8px;
+}
+
+.editor-form::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.editor-form::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
 
 .form-row {
   display: flex;
   gap: 1rem;
 }
+
 .form-row .form-group {
   flex: 1;
 }
@@ -351,7 +453,9 @@ label {
   letter-spacing: 0.02em;
 }
 
-input, select, textarea {
+input,
+select,
+textarea {
   background: var(--input-bg);
   border: 1px solid var(--input-border);
   color: var(--text-main);
@@ -363,7 +467,9 @@ input, select, textarea {
   width: 100%;
 }
 
-input:focus, select:focus, textarea:focus {
+input:focus,
+select:focus,
+textarea:focus {
   outline: none;
   border-color: var(--primary-color);
   box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
@@ -392,7 +498,7 @@ select {
 
 /* Advanced Section (Details/Summary) */
 .advanced-section {
-  background: rgba(255,255,255,0.02);
+  background: rgba(255, 255, 255, 0.02);
   border: 1px solid var(--panel-border);
   border-radius: var(--radius-md);
   padding: 0.5rem;
@@ -435,7 +541,7 @@ select {
   font-size: 1rem;
   cursor: pointer;
   transition: var(--transition);
-  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
   width: 100%;
 }
 
@@ -456,10 +562,11 @@ select {
 }
 
 .btn-icon {
-  background: rgba(255,255,255,0.05);
+  background: rgba(255, 255, 255, 0.05);
   border: 1px solid var(--panel-border);
   color: var(--text-main);
-  width: 32px; height: 32px;
+  width: 32px;
+  height: 32px;
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
@@ -469,7 +576,7 @@ select {
 }
 
 .btn-icon:hover {
-  background: rgba(255,255,255,0.1);
+  background: rgba(255, 255, 255, 0.1);
   transform: rotate(15deg);
 }
 
@@ -508,7 +615,15 @@ select {
 }
 
 @keyframes pulse {
-  0% { opacity: 0.5; }
-  50% { opacity: 1; }
-  100% { opacity: 0.5; }
+  0% {
+    opacity: 0.5;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0.5;
+  }
 }

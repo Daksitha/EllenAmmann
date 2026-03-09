@@ -1,0 +1,8 @@
+{
+  "host": "localhost",
+  "port": 3001,
+  "kb_path": "ellen_ammann_kb.jsonl",
+  "qa_path": "ellen_ammann_eval_qa.jsonl",
+  "backup_dir_kb": "data/kb",
+  "backup_dir_qa": "data/qa"
+}
