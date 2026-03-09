@@ -1,6 +1,6 @@
-# Knowledge Architect
+# Ellen Ammann Dataset Manager
 
-This project is a lightweight, local web application designed to help users build structured **Knowledge Bases (KB)** and **Evaluation Questionnaires (QA)** for RAG (Retrieval-Augmented Generation) systems. It supports multiple independent sessions, allowing you to manage different datasets and subject matters in one tool.
+This project is a lightweight, local web application designed to help non-technical users build a structured **Knowledge Base (KB)** and an **Evaluation Questionnaire (QA)** for Ellen Ammann. The resulting datasets are intended to be used for a Retrieval-Augmented Generation (RAG) system.
 
 ## Application Preview
 
@@ -18,25 +18,9 @@ Below is how the application should look when it is running. You can switch betw
 
 ### Windows Quick Start
 
-1. **Start:** Once the build is complete, double-click on `start.bat` to launch the application.
-
-### Linux VM (Docker - Recommended)
-
-1. **Requirement:** Ensure [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/) are installed.
-2. **Build & Run:** Run the following in the project directory to build the image and start the container directly on your VM's network:
-
-   ```bash
-   docker build -t knowledge-architect .
-   docker run -d --network host --name ka-server -v $(pwd)/sessions:/usr/src/app/sessions knowledge-architect
-   ```
-
-3. **Access:** Open `http://137.250.171.226:3001` in your browser.
-
-### Linux VM (Direct)
-
-1. **Build:** Run `./build.sh` (this installs dependencies via npm).
-2. **Start:** Run `./start.sh`.
-3. **Access:** Open `http://your-vm-ip:3001` in your browser.
+1. **Download/Clone:** Download this repository to your local machine.
+2. **Build:** Double-click on `build.bat`. This will install all necessary Node.js dependencies.
+3. **Start:** Once the build is complete, double-click on `start.bat` to launch the application.
 
 ### Alternative Editing
 
@@ -63,10 +47,13 @@ The codebase is a simple, no-build-required, full-stack application. It prioriti
 
 ### Directory Structure
 
-- [`server.js`](server.js): The main backend server file.
+- [`server.js`](server.js): The main backend server file. It exposes REST API endpoints (`GET`, `POST`, `DELETE`) to interact with the JSONL files.
 - [`public/`](public): Contains the frontend assets.
-- `sessions/`: Stores independent dataset sessions, each with its own `.jsonl` files and backups.
-- `.bat` / `.sh` scripts: Helper scripts for Windows and Linux to build, start, and stop the application.
+  - [`index.html`](public/index.html): The semantic structure of the editor.
+  - [`style.css`](public/style.css): A premium, dark-mode, glassmorphism design system.
+  - [`app.js`](public/app.js): The client-side logic that handles fetching data, rendering lists, populating forms, and submitting changes via the `fetch` API.
+- `data/`: A generated folder that holds ring-buffer backups of the datasets.
+- `.bat` scripts: Helper scripts for Windows users to easily build, start, stop, and reset the application.
 
 ## How it uses JSONL Data
 
