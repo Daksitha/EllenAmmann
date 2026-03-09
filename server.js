@@ -3,6 +3,7 @@ const cors = require('cors');
 const fs = require('fs/promises');
 const fsSync = require('fs');
 const path = require('path');
+const readline = require('readline');
 
 let config = {
     host: "0.0.0.0",
@@ -90,18 +91,28 @@ app.use(async (req, res, next) => {
 });
 
 async function readJsonlFile(filePath) {
+    console.log(`Reading file: ${path.basename(filePath)}`);
+    const records = [];
     try {
-        console.log(`Reading file: ${path.basename(filePath)}`);
-        const data = await fs.readFile(filePath, 'utf8');
-        const lines = data.split(/\r?\n/).filter(line => line.trim() !== '');
-        return lines.map(line => {
-            try { return JSON.parse(line); }
-            catch (e) { return null; }
-        }).filter(item => item !== null);
+        const fileStream = fsSync.createReadStream(filePath);
+        const rl = readline.createInterface({
+            input: fileStream,
+            crlfDelay: Infinity
+        });
+        for await (const line of rl) {
+            const trimmed = line.trim();
+            if (trimmed) {
+                try {
+                    records.push(JSON.parse(trimmed));
+                } catch (e) {
+                    // Ignore invalid lines
+                }
+            }
+        }
     } catch (err) {
-        if (err.code === 'ENOENT') return [];
-        throw err;
+        if (err.code !== 'ENOENT') throw err;
     }
+    return records;
 }
 
 async function createBackup(type, paths) {

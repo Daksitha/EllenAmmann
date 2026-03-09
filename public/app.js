@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function loadSessions() {
         try {
+            sessionSelect.disabled = true;
             const res = await fetch('/api/sessions');
             const sessions = await res.json();
 
@@ -19,8 +20,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 currentSession = sessions[0] || 'default';
                 localStorage.setItem('knowledge_architect_session', currentSession);
             }
+            sessionSelect.disabled = false;
         } catch (err) {
             console.error('Failed to load sessions', err);
+            sessionSelect.disabled = false;
         }
     }
 
@@ -46,9 +49,40 @@ document.addEventListener('DOMContentLoaded', () => {
         refreshCurrentView();
     });
 
-    newSessionBtn.addEventListener('click', async () => {
-        const name = prompt('Enter a name for the new session (logs and data will be saved accordingly):');
+    const newSessionModal = document.getElementById('new-session-modal');
+    const newSessionForm = document.getElementById('new-session-form');
+    const newSessionNameInput = document.getElementById('new-session-name');
+    const closeModalBtn = document.getElementById('close-modal-btn');
+    const cancelModalBtn = document.getElementById('cancel-modal-btn');
+    const createSessionBtn = document.getElementById('create-session-btn');
+    const modalMsg = document.getElementById('modal-msg');
+
+    function closeNewSessionModal() {
+        newSessionModal.style.display = 'none';
+        newSessionForm.reset();
+        modalMsg.style.display = 'none';
+        createSessionBtn.disabled = false;
+        createSessionBtn.textContent = 'Create Session';
+    }
+
+    newSessionBtn.addEventListener('click', () => {
+        newSessionModal.style.display = 'flex';
+        newSessionNameInput.focus();
+    });
+
+    closeModalBtn.addEventListener('click', closeNewSessionModal);
+    cancelModalBtn.addEventListener('click', closeNewSessionModal);
+
+    newSessionForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const name = newSessionNameInput.value.trim();
         if (!name) return;
+
+        createSessionBtn.disabled = true;
+        createSessionBtn.textContent = 'Creating...';
+        modalMsg.className = 'form-msg';
+        modalMsg.textContent = 'Creating session...';
+        modalMsg.style.display = 'block';
 
         try {
             const res = await fetch('/api/sessions', {
@@ -62,11 +96,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 localStorage.setItem('knowledge_architect_session', currentSession);
                 await loadSessions();
                 refreshCurrentView();
+
+                modalMsg.className = 'form-msg success';
+                modalMsg.textContent = 'Session created successfully!';
+                setTimeout(closeNewSessionModal, 1000);
             } else {
-                alert(result.error);
+                modalMsg.className = 'form-msg error';
+                modalMsg.textContent = result.error || 'Failed to create session';
+                createSessionBtn.disabled = false;
+                createSessionBtn.textContent = 'Create Session';
             }
         } catch (err) {
-            alert('Failed to create session');
+            modalMsg.className = 'form-msg error';
+            modalMsg.textContent = 'Server error. Failed to create session.';
+            createSessionBtn.disabled = false;
+            createSessionBtn.textContent = 'Create Session';
         }
     });
 
